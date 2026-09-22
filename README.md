@@ -136,22 +136,45 @@ Respuesta al cliente
 - **No maneja bien el 20% de casos complejos:** quejas, problemas técnicos o
   sugerencias que requieren negociación, juicio o contención emocional
   genuina. Forzar al modelo a resolver estos casos por sí solo degrada la
-  experiencia del cliente.
+  experiencia del cliente. *Mitigación:* no es una limitación que la
+  tecnología elimine por completo (la empatía y el juicio humano genuinos no
+  son reemplazables), pero sí se puede gestionar bien con un buen diseño de
+  proceso:
+  - Un clasificador de intención/sentimiento detecta el caso complejo y lo
+    **enruta automáticamente a un agente humano**, en vez de dejar que el
+    modelo lo intente resolver solo.
+  - El LLM actúa como **"copiloto"** del agente humano (genera un borrador de
+    respuesta o un resumen del caso), pero la decisión final y el envío los
+    hace la persona.
+  - Al escalar el caso, se le pasa al agente **todo el historial de la
+    conversación**, para que el cliente no tenga que repetir su problema.
+  - Se revisan periódicamente los casos escalados para detectar patrones que,
+    con el tiempo, sí se puedan automatizar de forma segura.
 - **Depende completamente de la calidad de los datos:** si la base de datos
   de EcoMarket tiene un error (por ejemplo, un estado de pedido desactualizado),
-  el modelo repetirá ese error con total seguridad aparente.
+  el modelo repetirá ese error con total seguridad aparente. *Mitigación:*
+  validaciones de calidad de datos en el origen (antes de que lleguen al
+  modelo) y monitoreo de reclamos para detectar inconsistencias.
 - **Sin datos, no hay respuesta confiable:** si la información no está en el
   contexto proporcionado, el modelo debe decir explícitamente que no la tiene
   (así se diseñaron los prompts en la Fase 3); si esta regla no se refuerza,
-  el riesgo de alucinación aumenta.
+  el riesgo de alucinación aumenta. *Mitigación:* reforzar la instrucción en
+  el prompt de sistema y probarla sistemáticamente con casos donde el dato no
+  existe, para confirmar que el modelo lo reconoce en vez de inventarlo.
 - **Calidad variable según el modelo usado:** un modelo pequeño y gratuito
   (como el usado en el prototipo local de este taller) puede ser menos fluido
   o cometer más errores de formato que un modelo grande de pago; esto es un
   trade-off directo entre costo y calidad que EcoMarket debe decidir según su
-  presupuesto.
+  presupuesto. *Mitigación:* usar el modelo local para prototipar y validar
+  los prompts sin costo (como se hizo en este taller), y migrar a un modelo
+  de pago más capaz en producción si el volumen y el presupuesto lo permiten
+  (la arquitectura no cambia, solo `base_url`/`api_key`).
 - **Latencia variable:** un modelo autoalojado en hardware modesto (CPU, sin
   GPU) responde notablemente más lento que una API en la nube, lo que puede
-  no ser aceptable para un chat en tiempo real a gran escala.
+  no ser aceptable para un chat en tiempo real a gran escala. *Mitigación:*
+  usar hardware con GPU o una API en la nube para producción; el modelo local
+  es apto para desarrollo, pruebas y datos muy sensibles, no necesariamente
+  para el tráfico completo en vivo.
 
 ### Riesgos éticos
 
