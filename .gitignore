@@ -1,0 +1,11 @@
+# Datos del dataset (pesados, se descargan aparte - ver README) y material del curso
+Entrada/
+
+# Checkpoints y cachés
+.ipynb_checkpoints/
+__pycache__/
+*.pyc
+
+# Archivos temporales del sistema
+.DS_Store
+Thumbs.db
